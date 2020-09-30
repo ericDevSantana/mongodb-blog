@@ -1,3 +1,4 @@
+import { Form } from "react-bootstrap"
 import { connectToDatabase } from "../utils/mongodb"
 
 export default function Posts({ posts }) {
@@ -12,6 +13,17 @@ export default function Posts({ posts }) {
                     </li>
                 ))}
             </ul>
+            <Form>
+                <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control type="textarea" placeholder="Post Title" />
+                </Form.Group>
+
+                <Form.Group controlId="exampleForm.ControlTextarea1">
+                    <Form.Label>Content</Form.Label>
+                    <Form.Control as="textarea" rows="3" />
+                </Form.Group>
+            </Form>
         </div>
     );
 }
