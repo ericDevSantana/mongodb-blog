@@ -70,6 +70,8 @@ export async function getServerSideProps() {
         // .limit(20) Uncomment to limit the numbers of posts displayed
         .toArray();
 
+    posts.reverse();
+    
     return {
         props: {
             posts: JSON.parse(JSON.stringify(posts))
