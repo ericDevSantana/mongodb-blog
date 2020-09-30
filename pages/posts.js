@@ -1,7 +1,28 @@
-import { Form } from "react-bootstrap"
+import { Form, Button } from "react-bootstrap"
 import { connectToDatabase } from "../utils/mongodb"
+import { useState } from 'react'
 
 export default function Posts({ posts }) {
+    const [post, setPost] = useState({
+        title: "",
+        content: ""
+    });
+
+    function onChange(e) {
+        const { name, value } = e.target;
+
+        setPost((prevValue) => {
+            return {
+                ...prevValue,
+                [name]: value
+            }
+        });
+    };
+
+    function onSubmit(e) {
+        createPostRequest(post);
+    }
+
     return (
         <div>
             <h1>Latest News</h1>
@@ -13,21 +34,26 @@ export default function Posts({ posts }) {
                     </li>
                 ))}
             </ul>
-            <Form>
+
+            <Form onSubmit={onSubmit}>
                 <Form.Group controlId="exampleForm.ControlInput1">
                     <Form.Label>Title</Form.Label>
-                    <Form.Control type="textarea" placeholder="Post Title" />
+                    <Form.Control type="textarea" placeholder="Post Title" onChange={onChange} name="title"/>
                 </Form.Group>
 
                 <Form.Group controlId="exampleForm.ControlTextarea1">
                     <Form.Label>Content</Form.Label>
-                    <Form.Control as="textarea" rows="3" />
+                    <Form.Control as="textarea" rows="3" onChange={onChange} name="content"/>
                 </Form.Group>
+
+                <Button variant="primary" type="submit">
+                    Post
+                </Button>
             </Form>
+
         </div>
     );
 }
-
 
 // Fetch DATA on each request
 export async function getServerSideProps() {
@@ -44,4 +70,16 @@ export async function getServerSideProps() {
             posts: JSON.parse(JSON.stringify(posts))
         }
     };
+}
+
+async function createPostRequest(newPost) {
+    const response = await fetch("/api/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ post: newPost }),
+    });
+    const data = await response.json();
+    return data.post;
 }
