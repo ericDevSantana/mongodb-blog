@@ -2,6 +2,8 @@ import { Form, Button } from "react-bootstrap"
 import { connectToDatabase } from "../utils/mongodb"
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { signIn, signOut, useSession } from 'next-auth/client'
+
 
 export default function Posts({ posts }) {
     const router = useRouter();
@@ -9,6 +11,8 @@ export default function Posts({ posts }) {
         title: "",
         content: ""
     });
+    const [session, loading] = useSession()
+    
 
     function onChange(e) {
         const { name, value } = e.target;
@@ -40,21 +44,29 @@ export default function Posts({ posts }) {
                 ))}
             </ul>
 
-            <Form onSubmit={onSubmit}>
-                <Form.Group controlId="exampleForm.ControlInput1">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control type="textarea" value={post.title} placeholder="Post Title" onChange={onChange} name="title"/>
-                </Form.Group>
+            {!session && <>
+                Not signed in <br />
+                <button onClick={signIn}>Sign in</button>
+            </>}
+            {session && <>
+                Signed in as {session.user.email} <br />
+                <button onClick={signOut}>Sign out</button>
+                <Form onSubmit={onSubmit}>
+                    <Form.Group controlId="exampleForm.ControlInput1">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control type="textarea" value={post.title} placeholder="Post Title" onChange={onChange} name="title" />
+                    </Form.Group>
 
-                <Form.Group controlId="exampleForm.ControlTextarea1">
-                    <Form.Label>Content</Form.Label>
-                    <Form.Control as="textarea" rows="3" value={post.content} onChange={onChange} name="content"/>
-                </Form.Group>
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Label>Content</Form.Label>
+                        <Form.Control as="textarea" rows="3" value={post.content} onChange={onChange} name="content" />
+                    </Form.Group>
 
-                <Button variant="primary" type="submit">
-                    Post
+                    <Button variant="primary" type="submit">
+                        Post
                 </Button>
-            </Form>
+                </Form>
+            </>}
 
         </div>
     );
