@@ -50,7 +50,7 @@ export default function Posts({ posts }) {
             </>}
             {session && <>
                 Signed in as {session.user.email} <br />
-                <button onClick={signOut}>Sign out</button>
+                <button onClick={signOut}>Sign out</button><br /><br />
                 <Form onSubmit={onSubmit}>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Title</Form.Label>
